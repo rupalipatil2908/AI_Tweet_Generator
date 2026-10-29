@@ -62,9 +62,14 @@ def home(request):
 
 
             response = client.models.generate_content(
-                model="gemini-3.8-flash",
-                contents=prompt
-            )
+            model="gemini-3.8-flash",
+            contents=prompt,
+            config={
+                "thinking_config": {
+                    "thinking_level": "LOW"
+                }
+            }
+        )
 
             return JsonResponse({
                 "message": "Tweets generated successfully!",
