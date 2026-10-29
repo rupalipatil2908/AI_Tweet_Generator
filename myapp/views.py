@@ -24,7 +24,10 @@ def home(request):
                     "error": "Gemini API key is not configured."
                 }, status=500)
 
-            client = genai.Client(api_key=api_key)
+            client = genai.Client(
+            api_key=api_key,
+            http_options={"timeout": 90000}
+            )
 
             
             prompt = f"""
