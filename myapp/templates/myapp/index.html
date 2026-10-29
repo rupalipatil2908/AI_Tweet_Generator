@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Tweet Generator</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+</head>
+<body>
+
+    <h1>AI Tweet Generator</h1>
+    <p>Generate 10 tweets for your brand</p>
+
+    <label>Brand Name</label>
+    <input type="text" id="brand" placeholder="Enter brand name">
+
+    <br><br>
+
+    <label>Industry</label>
+    <select id="industry">
+        <option>Fashion</option>
+        <option>Food</option>
+        <option>Technology</option>
+        <option>Healthcare</option>
+    </select>
+
+    <br><br>
+
+    <label>Campaign Objective</label>
+    <select id="objective">
+        <option>Awareness</option>
+        <option>Promotion</option>
+        <option>Engagement</option>
+    </select>
+
+    <br><br>
+
+    <label>Product Details</label>
+    <textarea id="details" placeholder="Describe your product"></textarea>
+
+    <br><br>
+
+    <button onclick="generateTweets()">Generate Tweets</button>
+
+    <div id="result"></div>
+
+    <div id="result"></div>
+
+<script src="{% static 'myapp/script.js' %}"></script>
+</body>
+</html>
+
