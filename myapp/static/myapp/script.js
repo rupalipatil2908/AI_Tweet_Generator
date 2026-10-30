@@ -36,6 +36,7 @@ async function generateTweets() {
             throw new Error(data.error || "Something went wrong");
         }
 
+       
         result.replaceChildren();
 
         const heading = document.createElement("h2");
@@ -44,6 +45,10 @@ async function generateTweets() {
 
         const lines = (data.result || "").split("\n");
 
+        let currentSection = "";
+        let summaryList = null;
+        let tweetList = null;
+
         lines.forEach(line => {
             const text = line.trim();
 
@@ -51,45 +56,56 @@ async function generateTweets() {
                 return;
             }
 
-            if (/^#{1,3}\s/.test(text)) {
-                const h3 = document.createElement("h3");
-                h3.textContent = text.replace(/^#{1,3}\s*/, "");
-                result.appendChild(h3);
+            if (/^Brand Voice Summary:?$/i.test(text)) {
+                currentSection = "summary";
+
+                const title = document.createElement("h3");
+                title.textContent = "Brand Voice Summary:";
+                result.appendChild(title);
+
+                summaryList = document.createElement("ul");
+                summaryList.className = "summary-list";
+                result.appendChild(summaryList);
                 return;
             }
 
-            if (/^\*\*(.*?)\*\*$/.test(text)) {
-                const h3 = document.createElement("h3");
-                h3.textContent = text.replace(/\*\*/g, "");
-                result.appendChild(h3);
+            if (/^Tweets:?$/i.test(text)) {
+                currentSection = "tweets";
+
+                const title = document.createElement("h3");
+                title.textContent = "Tweets:";
+                result.appendChild(title);
+
+                tweetList = document.createElement("ol");
+                result.appendChild(tweetList);
                 return;
             }
 
-            const tweet = text.match(/^\d+[.)]\s*(.*)/);
-
-            if (tweet) {
-                let list = result.querySelector("ol");
-
-                if (!list) {
-                    list = document.createElement("ol");
-                    result.appendChild(list);
-                }
-
-                const item = document.createElement("li");
-                item.textContent = tweet[1].replace(/\*\*/g, "");
-                item.style.marginBottom = "12px";
-                list.appendChild(item);
-                return;
-            }
-
-            const paragraph = document.createElement("p");
-            paragraph.textContent = text
+            const cleanText = text
                 .replace(/\*\*/g, "")
-                .replace(/^[-*]\s+/, "• ");
-            result.appendChild(paragraph);
+                .replace(/^#{1,3}\s*/, "");
+
+            if (currentSection === "summary") {
+                const item = document.createElement("li");
+                item.textContent = cleanText.replace(/^[•*-]\s*/, "");
+                summaryList.appendChild(item);
+                return;
+            }
+
+            if (currentSection === "tweets") {
+                const tweet = cleanText.match(/^\d+[.)]\s*(.*)/);
+
+                if (tweet) {
+                    const item = document.createElement("li");
+                    item.textContent = tweet[1];
+                    tweetList.appendChild(item);
+                }
+            }
         });
 
-    } catch (error) {
+
+    } 
+    catch (error) {
         result.textContent = "Error: " + error.message;
         console.error(error);
     }
